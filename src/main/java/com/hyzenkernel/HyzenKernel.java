@@ -1,7 +1,6 @@
 package com.hyzenkernel;
 
 import com.hyzenkernel.commands.ChunkProtectionCommand;
-import com.hyzenkernel.commands.DashboardCommand;
 import com.hyzenkernel.commands.ChunkStatusCommand;
 import com.hyzenkernel.commands.ChunkUnloadCommand;
 import com.hyzenkernel.commands.CleanInteractionsCommand;
@@ -298,7 +297,6 @@ public class HyzenKernel extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getCommandRegistry().registerCommand(new DashboardCommand(this));
         getCommandRegistry().registerCommand(new ChunkProtectionCommand(this));
         getCommandRegistry().registerCommand(new ChunkStatusCommand(this));
         getCommandRegistry().registerCommand(new ChunkUnloadCommand(this));
@@ -307,7 +305,7 @@ public class HyzenKernel extends JavaPlugin {
         getCommandRegistry().registerCommand(new FixCounterCommand(this));
         getCommandRegistry().registerCommand(new InteractionStatusCommand(this));
         getCommandRegistry().registerCommand(new WhoCommand());
-        getLogger().at(Level.INFO).log("[CMD] Registered /hyzenkernel dashboard, /chunkprotect, /chunkstatus, /chunkunload, /fixcounter, /interactionstatus, and /who commands");
+        getLogger().at(Level.INFO).log("[CMD] Registered /chunkprotect, /chunkstatus, /chunkunload, /fixcounter, /interactionstatus, and /who commands");
     }
 
     @Override

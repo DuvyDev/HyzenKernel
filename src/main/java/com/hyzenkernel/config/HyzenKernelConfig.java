@@ -198,7 +198,7 @@ public class HyzenKernelConfig {
 
 
     // ============================================
-    // Convenience setter methods for dashboard UI
+    // Convenience setter methods for runtime config updates
     // ============================================
 
     /**

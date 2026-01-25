@@ -123,7 +123,7 @@ public class ConfigManager {
 
     /**
      * Save the current configuration to file.
-     * Used by the dashboard to persist config changes.
+     * Used to persist config changes.
      */
     public void saveConfig() {
         try {

@@ -40,7 +40,7 @@ public class InteractionStatusCommand extends AbstractPlayerCommand {
     public InteractionStatusCommand(HyzenKernel plugin) {
         super("interactionstatus", "hyzenkernel.command.interactionstatus.desc");
         this.plugin = plugin;
-        addAliases("hyfixstatus", "hfs", "hyzenkernel");
+        addAliases("hyfixstatus", "hfs");
     }
 
     @Override
