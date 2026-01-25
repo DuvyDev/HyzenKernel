@@ -1,20 +1,22 @@
-# HyFixes
+# HyzenKernel
 
 Essential bug fixes for Hytale Early Access servers. Prevents crashes, player kicks, and desync issues caused by known bugs in Hytale's core systems.
 
+HyzenKernel is a fork of HyFixes, improved, cleaner, more organized, and optimized. Credits: https://github.com/John-Willikers/hyfixes
+
 [![Discord](https://img.shields.io/badge/Discord-Join%20for%20Support-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/6g7McTd27z)
-[![GitHub Issues](https://img.shields.io/badge/GitHub-Report%20Bugs-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/John-Willikers/hyfixes/issues)
+[![GitHub Issues](https://img.shields.io/badge/GitHub-Report%20Bugs-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/HyzenNet/Kernel/issues)
 
 ---
 
 ## Two Plugins, One Solution
 
-HyFixes consists of **two complementary plugins** that work together to fix different types of bugs:
+HyzenKernel consists of **two complementary plugins** that work together to fix different types of bugs:
 
 | Plugin | File | Purpose |
 |--------|------|---------|
-| **Runtime Plugin** | `hyfixes.jar` | Fixes bugs at runtime using sanitizers and event hooks |
-| **Early Plugin** | `hyfixes-early.jar` | Fixes deep core bugs via bytecode transformation at class load |
+| **Runtime Plugin** | `hyzenkernel.jar` | Fixes bugs at runtime using sanitizers and event hooks |
+| **Early Plugin** | `hyzenkernel-early.jar` | Fixes deep core bugs via bytecode transformation at class load |
 
 ### Why Two Plugins?
 
@@ -26,13 +28,13 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 
 ### Runtime Plugin (Required)
 
-1. Download `hyfixes.jar` from [Releases](https://github.com/John-Willikers/hyfixes/releases)
+1. Download `hyzenkernel.jar` from [Releases](https://github.com/HyzenNet/Kernel/releases)
 2. Place in your server's `mods/` directory
 3. Restart the server
 
 ### Early Plugin (Recommended)
 
-1. Download `hyfixes-early.jar` from [Releases](https://github.com/John-Willikers/hyfixes/releases)
+1. Download `hyzenkernel-early.jar` from [Releases](https://github.com/HyzenNet/Kernel/releases)
 2. Place in your server's `earlyplugins/` directory
 3. Start the server with early plugins enabled:
    - Set `ACCEPT_EARLY_PLUGINS=1` environment variable, OR
@@ -41,8 +43,8 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 ### Alternative Downloads
 
 **ModTale:**
-- [HyFixes Runtime](https://modtale.net/project/YOUR_RUNTIME_UUID) *(update link after project creation)*
-- [HyFixes Early](https://modtale.net/project/YOUR_EARLY_UUID) *(update link after project creation)*
+- [HyzenKernel Runtime](https://modtale.net/project/YOUR_RUNTIME_UUID) *(update link after project creation)*
+- [HyzenKernel Early](https://modtale.net/project/YOUR_EARLY_UUID) *(update link after project creation)*
 
 ---
 
@@ -170,30 +172,30 @@ if (adjustedIndex < 0) {
 
 Look for these log messages at startup:
 ```
-[HyFixes|P] Plugin enabled - HyFixes vX.X.X
-[HyFixes|P] [PickupItemSanitizer] Active - monitoring for corrupted pickup items
+[HyzenKernel] Plugin enabled - HyzenKernel vX.X.X
+[HyzenKernel] [PickupItemSanitizer] Active - monitoring for corrupted pickup items
 ```
 
 ### Early Plugin Loaded
 
 Look for these log messages at startup (15 transformers):
 ```
-[HyFixes-Early] InteractionChain transformation COMPLETE!
-[HyFixes-Early] World transformation COMPLETE!
-[HyFixes-Early] Universe transformation COMPLETE!
-[HyFixes-Early] TickingThread transformation COMPLETE!
-[HyFixes-Early] SpawnReferenceSystems transformation COMPLETE!
-[HyFixes-Early] BeaconSpawnController transformation COMPLETE!
-[HyFixes-Early] BlockComponentChunk transformation COMPLETE!
-[HyFixes-Early] MarkerAddRemoveSystem transformation COMPLETE!
-[HyFixes-Early] SpawnMarkerEntity transformation COMPLETE!
-[HyFixes-Early] SpawnMarkerSystems transformation COMPLETE!
-[HyFixes-Early] TrackedPlacement transformation COMPLETE!
-[HyFixes-Early] WorldMapTracker transformation COMPLETE!
-[HyFixes-Early] ArchetypeChunk transformation COMPLETE!
-[HyFixes-Early] PacketHandler transformation COMPLETE!
-[HyFixes-Early] Successfully transformed UUIDSystem.onEntityRemove()
-[HyFixes-Early] CommandBuffer transformation COMPLETE!
+[HyzenKernel-Early] InteractionChain transformation COMPLETE!
+[HyzenKernel-Early] World transformation COMPLETE!
+[HyzenKernel-Early] Universe transformation COMPLETE!
+[HyzenKernel-Early] TickingThread transformation COMPLETE!
+[HyzenKernel-Early] SpawnReferenceSystems transformation COMPLETE!
+[HyzenKernel-Early] BeaconSpawnController transformation COMPLETE!
+[HyzenKernel-Early] BlockComponentChunk transformation COMPLETE!
+[HyzenKernel-Early] MarkerAddRemoveSystem transformation COMPLETE!
+[HyzenKernel-Early] SpawnMarkerEntity transformation COMPLETE!
+[HyzenKernel-Early] SpawnMarkerSystems transformation COMPLETE!
+[HyzenKernel-Early] TrackedPlacement transformation COMPLETE!
+[HyzenKernel-Early] WorldMapTracker transformation COMPLETE!
+[HyzenKernel-Early] ArchetypeChunk transformation COMPLETE!
+[HyzenKernel-Early] PacketHandler transformation COMPLETE!
+[HyzenKernel-Early] Successfully transformed UUIDSystem.onEntityRemove()
+[HyzenKernel-Early] CommandBuffer transformation COMPLETE!
 ```
 
 ---
@@ -210,10 +212,10 @@ Look for these log messages at startup (15 transformers):
 
 ## Support
 
-**Found a bug?** Please report it on [GitHub Issues](https://github.com/John-Willikers/hyfixes/issues) with:
+**Found a bug?** Please report it on [GitHub Issues](https://github.com/HyzenNet/Kernel/issues) with:
 - Server logs showing the error
 - Steps to reproduce (if known)
-- HyFixes version
+- HyzenKernel version
 
 **Need help?** Join our [Discord](https://discord.gg/6g7McTd27z) for community support!
 
@@ -225,8 +227,8 @@ Requires Java 21 and access to `HytaleServer.jar`.
 
 ```bash
 # Clone the repo
-git clone https://github.com/John-Willikers/hyfixes.git
-cd hyfixes
+git clone https://github.com/HyzenNet/Kernel.git
+cd Kernel
 
 # Place HytaleServer.jar in libs/ directory
 mkdir -p libs
@@ -234,12 +236,12 @@ cp /path/to/HytaleServer.jar libs/
 
 # Build runtime plugin
 ./gradlew build
-# Output: build/libs/hyfixes.jar
+# Output: build/libs/hyzenkernel.jar
 
 # Build early plugin
-cd hyfixes-early
+cd hyzenkernel-early
 ./gradlew build
-# Output: build/libs/hyfixes-early-1.0.0.jar
+# Output: build/libs/hyzenkernel-early-1.0.0.jar
 ```
 
 ---
