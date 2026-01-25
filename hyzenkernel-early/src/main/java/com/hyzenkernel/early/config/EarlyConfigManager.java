@@ -140,6 +140,7 @@ public class EarlyConfigManager {
             case "tickingthread" -> t.tickingThread;
             case "universeremoveplayer" -> t.universeRemovePlayer;
             case "livingentity" -> t.livingEntity;
+            case "worldspawningsystem" -> t.worldSpawningSystem;
             default -> {
                 System.err.println("[HyzenKernel-Early-Config] Unknown transformer: " + name);
                 yield true; // Default to enabled for safety

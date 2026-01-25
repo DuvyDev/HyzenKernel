@@ -1,7 +1,7 @@
 {
   "Group": "com.hyzenkernel",
   "Name": "HyzenKernel",
-  "Version": "1.0.4",
+  "Version": "1.0.5",
   "Description": "Essential bug fixes for Hytale Early Access servers. Prevents crashes, player kicks, and sync issues.",
   "Main": "com.hyzenkernel.HyzenKernel",
   "Authors": [

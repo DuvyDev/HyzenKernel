@@ -5,7 +5,7 @@ plugins {
 
 group = "com.hyzenkernel"
 // Version is set in manifest.json - don't let gradle override it
-val projectVersion = "1.0.4"
+val projectVersion = "1.0.5"
 version = projectVersion
 
 java {

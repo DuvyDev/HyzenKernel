@@ -39,6 +39,7 @@ public class EarlyPluginConfig {
         public boolean tickingThread = true;
         public boolean universeRemovePlayer = true;
         public boolean livingEntity = true;
+        public boolean worldSpawningSystem = true;
     }
 
     /**

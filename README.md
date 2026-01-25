@@ -55,7 +55,6 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | RespawnBlock Crash | Critical | Player kicked when breaking bed |
 | ProcessingBench Crash | Critical | Player kicked when bench is destroyed |
 | Instance Exit Crash | Critical | Player kicked when exiting dungeon |
-| Chunk Memory Bloat | High | Server runs out of memory over time |
 | CraftingManager Crash | Critical | Player kicked when opening bench |
 | InteractionManager Crash | Critical | Player kicked during interactions |
 | Quest Objective Crash | Critical | Quest system crashes |
@@ -70,6 +69,7 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | Instance Portal Race | Critical | Player kicked when entering instance portals (retry loop fix) |
 | Null SpawnController | Critical | World crashes when spawn beacons load |
 | Null Spawn Parameters | Critical | World crashes in volcanic/cave biomes |
+| WorldSpawningSystem Invalid Ref | Critical | World thread crash during spawn job creation (invalid chunk ref) |
 | Duplicate Block Components | Critical | Player kicked when using teleporters |
 | Null npcReferences (Removal) | Critical | World crashes when spawn markers are removed |
 | Null npcReferences (Constructor) | Critical | ROOT CAUSE: SpawnMarkerEntity never initializes array |
