@@ -6,8 +6,6 @@ import com.hyzenkernel.listeners.GatherObjectiveTaskSanitizer;
 import com.hyzenkernel.listeners.InteractionManagerSanitizer;
 import com.hyzenkernel.listeners.SpawnBeaconSanitizer;
 import com.hyzenkernel.listeners.ChunkTrackerSanitizer;
-import com.hyzenkernel.systems.ChunkCleanupSystem;
-import com.hyzenkernel.systems.ChunkUnloadManager;
 import com.hyzenkernel.systems.InteractionChainMonitor;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -157,30 +155,6 @@ public class InteractionStatusCommand extends AbstractPlayerCommand {
 
         sendMessage(player, "");
 
-        // ChunkCleanupSystem status
-        ChunkCleanupSystem cleanupSystem = plugin.getChunkCleanupSystem();
-        if (cleanupSystem != null) {
-            sendMessage(player, "&6--- Chunk Cleanup System ---");
-            String status = cleanupSystem.getStatus();
-            for (String line : status.split("\n")) {
-                sendMessage(player, "&7" + line);
-            }
-        }
-
-        sendMessage(player, "");
-
-        // ChunkUnloadManager status
-        ChunkUnloadManager unloadManager = plugin.getChunkUnloadManager();
-        if (unloadManager != null) {
-            sendMessage(player, "&6--- Chunk Unload Manager ---");
-            String status = unloadManager.getStatus();
-            for (String line : status.split("\n")) {
-                sendMessage(player, "&7" + line);
-            }
-        }
-
-        sendMessage(player, "");
-
         // Known unfixable bugs section
         sendMessage(player, "&6--- Known Unfixable Hytale Bugs ---");
         sendMessage(player, "&7These require fixes from Hytale developers:");
@@ -191,7 +165,6 @@ public class InteractionStatusCommand extends AbstractPlayerCommand {
 
         sendMessage(player, "");
         sendMessage(player, "&6========================================");
-        sendMessage(player, "&7Tip: Use /chunkstatus for chunk details");
         sendMessage(player, "&7Docs: github.com/HyzenNet/kernel");
         sendMessage(player, "&6========================================");
     }

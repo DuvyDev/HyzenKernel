@@ -112,12 +112,13 @@ Look for these messages in your server log at startup (10 transformers):
 
 | Command | Description |
 |---------|-------------|
-| `/hyzenkernel` | Show HyzenKernel statistics and crash prevention counts |
-| `/chunkstatus` | Show loaded chunk counts and memory info |
-| `/chunkunload` | Force immediate chunk cleanup |
+| `/interactionstatus` | Show HyzenKernel statistics and crash prevention counts |
+| `/cleaninteractions` | Scan/remove orphaned interaction zones |
+| `/cleanwarps` | Scan/remove orphaned warp entries |
 | `/fixcounter` | Fix/view teleporter BlockCounter values |
+| `/who` | List online players |
 
-Aliases: `/hfs`, `/interactionstatus`, `/fc`, `/blockcounter`
+Aliases: `/hfs`, `/hyfixstatus`, `/ci`, `/cleanint`, `/fixinteractions`, `/cw`, `/fixwarps`, `/warpclean`, `/fc`, `/blockcounter`, `/teleporterlimit`
 
 ---
 

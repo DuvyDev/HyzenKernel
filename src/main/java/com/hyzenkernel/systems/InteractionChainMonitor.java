@@ -51,7 +51,6 @@ public class InteractionChainMonitor extends EntityTickingSystem<EntityStore> {
     private final AtomicInteger processingBenchFixes = new AtomicInteger(0);
     private final AtomicInteger instanceExitFixes = new AtomicInteger(0);
     private final AtomicInteger objectiveFixes = new AtomicInteger(0);
-    private final AtomicInteger chunkCleanups = new AtomicInteger(0);
 
     // Known unfixable issues (from log analysis)
     // These are constants based on our analysis - we can't track them in real-time
@@ -185,12 +184,6 @@ public class InteractionChainMonitor extends EntityTickingSystem<EntityStore> {
         objectiveFixes.incrementAndGet();
     }
 
-    /**
-     * Record a chunk cleanup.
-     */
-    public void recordChunkCleanup() {
-        chunkCleanups.incrementAndGet();
-    }
 
     /**
      * Get full status report for admin command.
@@ -216,7 +209,6 @@ public class InteractionChainMonitor extends EntityTickingSystem<EntityStore> {
         sb.append(String.format("  Objective (null task ref): %d\n", objectiveFixes.get()));
         sb.append("\n");
         sb.append("--- Memory Management ---\n");
-        sb.append(String.format("  Chunk Cleanups: %d\n", chunkCleanups.get()));
         sb.append("\n");
         sb.append("--- Known Unfixable Issues ---\n");
         sb.append("(These are Hytale core bugs - report to developers)\n");

@@ -152,46 +152,15 @@ if (adjustedIndex < 0) {
 
 ## Configuration
 
-### BetterMap Compatibility (v1.6.2+)
-
-If you use **BetterMap** or other world map plugins, you may need to disable HyFixes' aggressive chunk unloading. The ChunkUnloadManager can clear chunk data that map plugins need for rendering, causing black/empty maps.
-
-**To disable ChunkUnloadManager:**
-
-**Option 1: Environment Variable**
-```bash
-export HYFIXES_DISABLE_CHUNK_UNLOAD=true
-```
-
-**Option 2: JVM Argument**
-```bash
-java -Dhyfixes.disableChunkUnload=true -jar server.jar
-```
-
-**Option 3: Pterodactyl Panel**
-Add to Startup Variables:
-```
-HYFIXES_DISABLE_CHUNK_UNLOAD=true
-```
-
-**Trade-off:** Disabling ChunkUnloadManager means server memory may grow on servers where players explore large areas. Monitor your server's memory usage if you disable this feature.
-
-**Verification:** When disabled, you'll see these log messages at startup:
-```
-[DISABLED] ChunkUnloadManager - disabled via config (HYFIXES_DISABLE_CHUNK_UNLOAD=true)
-[DISABLED] This improves compatibility with BetterMap and other map plugins
-```
-
----
-
 ## Admin Commands
 
 | Command | Aliases | Description |
 |---------|---------|-------------|
-| `/hyfixes` | `/hfs`, `/interactionstatus` | Show HyFixes statistics and status |
-| `/chunkstatus` | | Show chunk counts and memory info |
-| `/chunkunload` | | Force immediate chunk cleanup |
-| `/fixcounter` | `/fc`, `/blockcounter` | Fix/view teleporter BlockCounter values |
+| `/interactionstatus` | `/hyfixstatus`, `/hfs` | Show HyzenKernel statistics and status |
+| `/cleaninteractions` | `/ci`, `/cleanint`, `/fixinteractions` | Scan/remove orphaned interaction zones |
+| `/cleanwarps` | `/cw`, `/fixwarps`, `/warpclean` | Scan/remove orphaned warp entries |
+| `/fixcounter` | `/fc`, `/blockcounter`, `/teleporterlimit` | Fix/view teleporter BlockCounter values |
+| `/who` | | List online players |
 
 ---
 
@@ -203,7 +172,6 @@ Look for these log messages at startup:
 ```
 [HyFixes|P] Plugin enabled - HyFixes vX.X.X
 [HyFixes|P] [PickupItemSanitizer] Active - monitoring for corrupted pickup items
-[HyFixes|P] [ChunkCleanupSystem] Active on MAIN THREAD
 ```
 
 ### Early Plugin Loaded

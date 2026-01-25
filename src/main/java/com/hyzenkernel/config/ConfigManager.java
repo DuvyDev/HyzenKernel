@@ -151,17 +151,6 @@ public class ConfigManager {
      * ENV/JVM args take precedence over config file values.
      */
     private void applyEnvironmentOverrides() {
-        // HYFIXES_DISABLE_CHUNK_UNLOAD=true or -Dhyzenkernel.disableChunkUnload=true
-        String disableChunkUnload = System.getenv("HYFIXES_DISABLE_CHUNK_UNLOAD");
-        if (disableChunkUnload == null) {
-            disableChunkUnload = System.getProperty("hyzenkernel.disableChunkUnload");
-        }
-        if ("true".equalsIgnoreCase(disableChunkUnload)) {
-            config.chunkUnload.enabled = false;
-            envOverridesApplied = true;
-            System.out.println("[HyzenKernel-Config] ENV override: chunkUnload.enabled = false (HYFIXES_DISABLE_CHUNK_UNLOAD)");
-        }
-
         // HYFIXES_VERBOSE=true or -Dhyzenkernel.verbose=true
         String verbose = System.getenv("HYFIXES_VERBOSE");
         if (verbose == null) {
@@ -276,73 +265,6 @@ public class ConfigManager {
         return config.logging.sanitizerActions;
     }
 
-    // ============================================
-    // Chunk unload settings
-    // ============================================
-
-    public boolean isChunkUnloadEnabled() {
-        return config.chunkUnload.enabled;
-    }
-
-    public int getChunkUnloadIntervalSeconds() {
-        return config.chunkUnload.intervalSeconds;
-    }
-
-    public int getChunkUnloadInitialDelaySeconds() {
-        return config.chunkUnload.initialDelaySeconds;
-    }
-
-    public int getChunkUnloadGcEveryNAttempts() {
-        return config.chunkUnload.gcEveryNAttempts;
-    }
-
-    /**
-     * Check if map-aware mode is enabled for BetterMaps compatibility.
-     * When enabled, map images are pre-rendered before chunk unload.
-     */
-    public boolean isMapAwareModeEnabled() {
-        return config.chunkUnload.mapAwareMode;
-    }
-
-    // ============================================
-    // Chunk cleanup settings
-    // ============================================
-
-    public int getChunkCleanupIntervalTicks() {
-        return config.chunkCleanup.intervalTicks;
-    }
-
-    // ============================================
-    // Chunk protection settings
-    // ============================================
-
-    public boolean isChunkProtectionEnabled() {
-        return config.chunkProtection.enabled;
-    }
-
-    public String[] getProtectedEntityKeywords() {
-        return config.chunkProtection.protectedEntityKeywords;
-    }
-
-    public String[] getProtectedBlockKeywords() {
-        return config.chunkProtection.protectedBlockKeywords;
-    }
-
-    public boolean protectGrowingPlants() {
-        return config.chunkProtection.protectGrowingPlants;
-    }
-
-    public boolean protectSpawnBeacons() {
-        return config.chunkProtection.protectSpawnBeacons;
-    }
-
-    public int getChunkProtectionVerificationIntervalTicks() {
-        return config.chunkProtection.verificationIntervalTicks;
-    }
-
-    public boolean logChunkProtectionEvents() {
-        return config.chunkProtection.logProtectionEvents;
-    }
 
     // ============================================
     // Interaction manager settings
