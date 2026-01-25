@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Title: hyzenkernel
+Implementation-Version: 1.0.3
+Plugin-Class: com.hyzenkernel.HyzenKernel
+

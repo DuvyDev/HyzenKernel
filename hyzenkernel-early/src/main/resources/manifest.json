@@ -1,0 +1,19 @@
+{
+  "Group": "com.hyzenkernel",
+  "Name": "HyzenKernel-Early",
+  "Version": "unspecified",
+  "Description": "Bytecode transformers for HyzenKernel - Fixes deep networking bugs and combat desync issues.",
+  "Main": "com.hyzenkernel.early.HyzenKernelEarly",
+  "Authors": [
+    {
+      "Name": "HyzenNet",
+      "Url": "https://github.com/HyzenNet"
+    }
+  ],
+  "Website": "https://github.com/HyzenNet/Kernel",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "DisabledByDefault": false,
+  "IncludesAssetPack": false
+}

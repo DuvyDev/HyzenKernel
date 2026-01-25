@@ -1,0 +1,16 @@
+com.hyzenkernel.early.InteractionChainTransformer
+com.hyzenkernel.early.InteractionManagerTransformer
+com.hyzenkernel.early.WorldTransformer
+com.hyzenkernel.early.SpawnReferenceSystemsTransformer
+com.hyzenkernel.early.BlockComponentChunkTransformer
+com.hyzenkernel.early.SpawnMarkerSystemsTransformer
+com.hyzenkernel.early.TrackedPlacementTransformer
+com.hyzenkernel.early.CommandBufferTransformer
+com.hyzenkernel.early.WorldMapTrackerTransformer
+com.hyzenkernel.early.ArchetypeChunkTransformer
+com.hyzenkernel.early.PacketHandlerTransformer
+com.hyzenkernel.early.UUIDSystemTransformer
+com.hyzenkernel.early.TickingThreadTransformer
+com.hyzenkernel.early.UniverseTransformer
+com.hyzenkernel.early.LivingEntityTransformer
+com.hyzenkernel.early.SetMemoriesCapacityTransformer
