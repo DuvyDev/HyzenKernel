@@ -4,9 +4,6 @@ Essential bug fixes for Hytale Early Access servers. Prevents crashes, player ki
 
 HyzenKernel is a fork of HyFixes, improved, cleaner, more organized, and optimized. Credits: https://github.com/John-Willikers/hyfixes
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20for%20Support-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/6g7McTd27z)
-[![GitHub Issues](https://img.shields.io/badge/GitHub-Report%20Bugs-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/HyzenNet/Kernel/issues)
-
 ---
 
 ## Two Plugins, One Solution
