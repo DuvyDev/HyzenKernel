@@ -40,6 +40,7 @@ public class EarlyPluginConfig {
         public boolean universeRemovePlayer = true;
         public boolean livingEntity = true;
         public boolean worldSpawningSystem = true;
+        public boolean staticSharedInstances = true;
     }
 
     /**

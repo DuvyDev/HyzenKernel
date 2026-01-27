@@ -17,6 +17,7 @@ import com.hyzenkernel.listeners.DefaultWorldRecoverySanitizer;
 import com.hyzenkernel.listeners.SpawnBeaconSanitizer;
 import com.hyzenkernel.listeners.ChunkTrackerSanitizer;
 import com.hyzenkernel.systems.InteractionChainMonitor;
+import com.hyzenkernel.systems.SharedInstanceResetSystem;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
@@ -34,6 +35,7 @@ import java.util.logging.Level;
  * - ProcessingBenchSanitizer: Prevents crash when breaking processing benches with open windows
  * - EmptyArchetypeSanitizer: Monitors for entities with invalid state (empty archetypes)
  * - InstancePositionTracker: Prevents kick when exiting instances with missing return world
+ * - SharedInstanceResetSystem: Resets shared portal instances when empty (entities + timers)
  * - GatherObjectiveTaskSanitizer: Prevents crash from null refs in quest objectives (v1.3.0)
  * - InteractionChainMonitor: Tracks unfixable Hytale bugs for reporting (v1.3.0)
  * - CraftingManagerSanitizer: Prevents crash from stale bench references (v1.3.1)
@@ -119,6 +121,15 @@ public class HyzenKernel extends JavaPlugin {
             getLogger().at(Level.INFO).log("[FIX] InstancePositionTracker registered - prevents crash when exiting instances with missing return world");
         } else {
             getLogger().at(Level.INFO).log("[DISABLED] InstancePositionTracker - disabled via config");
+        }
+
+        // Fix 5: Shared portal instance reset (static terrain + fresh mobs/timers)
+        // Resets shared instance worlds when empty to restart portal timers/void events and respawn NPCs
+        if (config.isSanitizerEnabled("sharedInstanceReset")) {
+            getChunkStoreRegistry().registerSystem(new SharedInstanceResetSystem(this));
+            getLogger().at(Level.INFO).log("[FIX] SharedInstanceResetSystem registered - resets shared portal instances when empty");
+        } else {
+            getLogger().at(Level.INFO).log("[DISABLED] SharedInstanceResetSystem - disabled via config");
         }
 
         // Fix 6: GatherObjectiveTask null ref crash (v1.3.0)
