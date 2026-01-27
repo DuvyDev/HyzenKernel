@@ -2,7 +2,7 @@
 
 Essential bug fixes for Hytale Early Access servers. Prevents crashes, player kicks, and desync issues caused by known bugs in Hytale's core systems.
 
-HyzenKernel is a fork of HyFixes, improved, cleaner, more organized, and optimized. Credits: https://github.com/John-Willikers/hyfixes
+HyzenKernel is a fork of HyFixes for Hyzen.net (A Hytale server), improved, cleaner, more organized, and optimized. Credits: https://github.com/John-Willikers/hyfixes
 
 ---
 
