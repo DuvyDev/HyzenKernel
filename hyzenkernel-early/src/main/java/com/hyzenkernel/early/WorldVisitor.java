@@ -19,8 +19,6 @@ public class WorldVisitor extends ClassVisitor {
     private static final String ADD_PLAYER_DESC = "(Lcom/hypixel/hytale/server/core/universe/PlayerRef;Lcom/hypixel/hytale/math/vector/Transform;Ljava/lang/Boolean;Ljava/lang/Boolean;)Ljava/util/concurrent/CompletableFuture;";
     private static final String EXECUTE_METHOD = "execute";
     private static final String EXECUTE_DESC = "(Ljava/lang/Runnable;)V";
-    private static final String VALIDATE_DELETE_METHOD = "validateDeleteOnRemove";
-    private static final String VALIDATE_DELETE_DESC = "()V";
 
     public WorldVisitor(ClassVisitor cv) {
         super(Opcodes.ASM9, cv);
@@ -47,12 +45,6 @@ public class WorldVisitor extends ClassVisitor {
             verbose("Found method: " + name + descriptor);
             verbose("Applying World.execute shutdown guard...");
             return new WorldExecuteMethodVisitor(mv, className);
-        }
-
-        if (name.equals(VALIDATE_DELETE_METHOD) && descriptor.equals(VALIDATE_DELETE_DESC)) {
-            verbose("Found method: " + name + descriptor);
-            verbose("Applying shared instance delete guard...");
-            return new WorldValidateDeleteMethodVisitor(mv, className);
         }
 
         return mv;

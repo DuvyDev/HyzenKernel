@@ -212,20 +212,12 @@ public class ConfigManager {
             case "gatherobjective" -> s.gatherObjective;
             case "emptyarchetype" -> s.emptyArchetype;
             case "instancepositiontracker" -> s.instancePositionTracker;
-            case "sharedinstancereset" -> s.sharedInstanceReset;
             case "defaultworldrecovery" -> s.defaultWorldRecovery;
             default -> {
                 System.err.println("[HyzenKernel-Config] Unknown sanitizer: " + name);
                 yield true; // Default to enabled for safety
             }
         };
-    }
-
-    /**
-     * Check if shared instance chunk unload is enabled.
-     */
-    public boolean isSharedInstanceUnloadChunksEnabled() {
-        return config.sanitizers.sharedInstanceUnloadChunks;
     }
 
     /**
@@ -245,7 +237,6 @@ public class ConfigManager {
             case "commandbuffer" -> t.commandBuffer;
             case "worldmaptracker" -> t.worldMapTracker;
             case "archetypechunk" -> t.archetypeChunk;
-            case "staticsharedinstances" -> t.staticSharedInstances;
             default -> {
                 System.err.println("[HyzenKernel-Config] Unknown transformer: " + name);
                 yield true; // Default to enabled for safety

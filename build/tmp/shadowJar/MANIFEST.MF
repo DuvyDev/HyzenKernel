@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Implementation-Title: hyzenkernel
-Implementation-Version: 1.0.8
+Implementation-Version: 1.0.7
 Plugin-Class: com.hyzenkernel.HyzenKernel
 
