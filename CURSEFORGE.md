@@ -13,8 +13,8 @@ HyzenKernel is a set of essential fixes for Hytale Early Access servers. It was 
 - Reduces shutdown errors and task submissions to dead worlds.
 
 ## Quick install
-1) Runtime (required): place `hyzenkernel.jar` in `mods/`
-2) Early (recommended): place `hyzenkernel-early.jar` in `earlyplugins/` and enable early plugins
+1) Runtime (required): place `hyzenkernel-X.X.X.jar` in `mods/`
+2) Early (recommended): place `hyzenkernel-early-X.X.X.jar` in `earlyplugins/` and enable early plugins
 
 ## Configuration
 Generated at `mods/hyzenkernel/config.json` with toggles for fixes and logging.
