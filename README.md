@@ -171,6 +171,10 @@ To disable the static shared instance system and revert to vanilla behavior, set
 Note: if you already created `instance-shared-*` worlds, they will remain on disk.
 To fully return to vanilla instance behavior, delete those folders under your server `worlds/` directory.
 
+Boot behavior: after all worlds finish loading, HyzenKernel will automatically unload any
+`instance-shared-*` worlds that have zero players. This prevents them from counting toward
+the portal fragment limit on a fresh server boot while keeping the terrain persistent on disk.
+
 ## Admin Commands
 
 | Command | Aliases | Description |

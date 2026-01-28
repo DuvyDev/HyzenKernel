@@ -14,6 +14,7 @@ import com.hyzenkernel.listeners.InstancePositionTracker;
 import com.hyzenkernel.listeners.ProcessingBenchSanitizer;
 import com.hyzenkernel.listeners.RespawnBlockSanitizer;
 import com.hyzenkernel.listeners.DefaultWorldRecoverySanitizer;
+import com.hyzenkernel.listeners.SharedInstanceBootUnloader;
 import com.hyzenkernel.listeners.SpawnBeaconSanitizer;
 import com.hyzenkernel.listeners.ChunkTrackerSanitizer;
 import com.hyzenkernel.systems.InteractionChainMonitor;
@@ -55,6 +56,7 @@ public class HyzenKernel extends JavaPlugin {
     private SpawnBeaconSanitizer spawnBeaconSanitizer;
     private ChunkTrackerSanitizer chunkTrackerSanitizer;
     private DefaultWorldRecoverySanitizer defaultWorldRecoverySanitizer;
+    private SharedInstanceBootUnloader sharedInstanceBootUnloader;
 
     public HyzenKernel(@Nonnull JavaPluginInit init) {
         super(init);
@@ -128,6 +130,8 @@ public class HyzenKernel extends JavaPlugin {
         if (config.isSanitizerEnabled("sharedInstancePersistence")) {
             getChunkStoreRegistry().registerSystem(new SharedInstancePersistenceSystem(this));
             getLogger().at(Level.INFO).log("[FIX] SharedInstancePersistenceSystem registered - keeps shared portal terrain on disk");
+            sharedInstanceBootUnloader = new SharedInstanceBootUnloader(this);
+            sharedInstanceBootUnloader.register();
         } else {
             getLogger().at(Level.INFO).log("[DISABLED] SharedInstancePersistenceSystem - disabled via config");
         }
