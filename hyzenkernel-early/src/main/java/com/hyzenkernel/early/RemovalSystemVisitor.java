@@ -9,8 +9,9 @@ import org.objectweb.asm.Opcodes;
  */
 public class RemovalSystemVisitor extends ClassVisitor {
 
-    private static final String TARGET_METHOD = "shouldRemoveWorld";
-    private static final String TARGET_DESC = "(Lcom/hypixel/hytale/component/Store;)Z";
+    private static final String TARGET_METHOD = "tick";
+    private static final String TARGET_DESC =
+            "(FILcom/hypixel/hytale/component/Store;)V";
 
     public RemovalSystemVisitor(ClassVisitor cv) {
         super(Opcodes.ASM9, cv);
@@ -21,7 +22,7 @@ public class RemovalSystemVisitor extends ClassVisitor {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
 
         if (TARGET_METHOD.equals(name) && TARGET_DESC.equals(descriptor)) {
-            return new RemovalSystemMethodVisitor(mv);
+            return new RemovalSystemTickMethodVisitor(mv);
         }
 
         return mv;

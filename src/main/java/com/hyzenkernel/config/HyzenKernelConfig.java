@@ -51,8 +51,7 @@ public class HyzenKernelConfig {
         public boolean gatherObjective = true;
         public boolean emptyArchetype = true;
         public boolean instancePositionTracker = true;
-        public boolean sharedInstanceReset = true;
-        public boolean sharedInstanceUnloadChunks = true;
+        public boolean sharedInstancePersistence = true;
         public boolean defaultWorldRecovery = true;  // Auto-reload default world after crash
     }
 

@@ -1,5 +1,6 @@
 package com.hyzenkernel.early;
 
+import com.hyzenkernel.early.config.EarlyConfigManager;
 import com.hypixel.hytale.plugin.early.ClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -25,6 +26,11 @@ public class InstancesPluginTransformer implements ClassTransformer {
     @Override
     public byte[] transform(String className, String packageName, byte[] classBytes) {
         if (!className.equals(TARGET_CLASS)) {
+            return classBytes;
+        }
+
+        if (!EarlyConfigManager.getInstance().isTransformerEnabled("staticSharedInstances")) {
+            info("InstancesPluginTransformer DISABLED by config");
             return classBytes;
         }
 

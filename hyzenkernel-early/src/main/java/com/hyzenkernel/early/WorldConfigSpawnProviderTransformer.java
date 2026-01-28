@@ -9,14 +9,15 @@ import org.objectweb.asm.ClassWriter;
 import static com.hyzenkernel.early.EarlyLogger.*;
 
 /**
- * HyzenKernel Early Plugin - PortalDeviceSummonPage transformer
+ * HyzenKernel Early Plugin - WorldConfig SpawnProvider Transformer
  *
- * Ensures shared instances use a stable return-portal spawn UUID to prevent
- * duplicate return portals.
+ * Ensures WorldConfig.setSpawnProvider() marks the config as changed so
+ * spawn providers are persisted to disk (prevents return portal drift).
  */
-public class PortalDeviceSummonTransformer implements ClassTransformer {
+public class WorldConfigSpawnProviderTransformer implements ClassTransformer {
 
-    private static final String TARGET_CLASS = "com.hypixel.hytale.builtin.portals.ui.PortalDeviceSummonPage";
+    private static final String TARGET_CLASS =
+            "com.hypixel.hytale.server.core.universe.world.WorldConfig";
 
     @Override
     public int priority() {
@@ -30,30 +31,30 @@ public class PortalDeviceSummonTransformer implements ClassTransformer {
         }
 
         if (!EarlyConfigManager.getInstance().isTransformerEnabled("staticSharedInstances")) {
-            info("PortalDeviceSummonTransformer DISABLED by config");
+            info("WorldConfigSpawnProviderTransformer DISABLED by config");
             return classBytes;
         }
 
         separator();
-        info("Transforming PortalDeviceSummonPage...");
-        verbose("Stabilizing return portal spawn for shared instances");
+        info("Transforming WorldConfig...");
+        verbose("Marking config dirty on setSpawnProvider()");
         separator();
 
         try {
             ClassReader reader = new ClassReader(classBytes);
             ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            ClassVisitor visitor = new PortalDeviceSummonVisitor(writer);
+            ClassVisitor visitor = new WorldConfigSpawnProviderVisitor(writer);
 
             reader.accept(visitor, ClassReader.EXPAND_FRAMES);
 
             byte[] transformedBytes = writer.toByteArray();
-            info("PortalDeviceSummonPage transformation COMPLETE!");
+            info("WorldConfig SpawnProvider transformation COMPLETE!");
             verbose("Original size: " + classBytes.length + " bytes");
             verbose("Transformed size: " + transformedBytes.length + " bytes");
 
             return transformedBytes;
         } catch (Exception e) {
-            error("ERROR: Failed to transform PortalDeviceSummonPage!");
+            error("ERROR: Failed to transform WorldConfig!");
             error("Returning original bytecode to prevent crash.", e);
             return classBytes;
         }

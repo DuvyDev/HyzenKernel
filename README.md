@@ -49,7 +49,7 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | RespawnBlock Crash | Critical | Player kicked when breaking bed |
 | ProcessingBench Crash | Critical | Player kicked when bench is destroyed |
 | Instance Exit Crash | Critical | Player kicked when exiting dungeon |
-| Shared Instance Reset | Medium | Resets shared portal instances when empty (entities + timers) and can unload chunks |
+| Shared Instance Persistence | Medium | Keeps shared portal terrain on disk between runs |
 | CraftingManager Crash | Critical | Player kicked when opening bench |
 | InteractionManager Crash | Critical | Player kicked during interactions |
 | Quest Objective Crash | Critical | Quest system crashes |
@@ -62,6 +62,10 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | Sync Buffer Overflow | Critical | Combat/food/tool desync, 400-2500 errors/session |
 | Sync Position Gap | Critical | Player kicked with "out of order" exception |
 | Instance Portal Race | Critical | Player kicked when entering instance portals (retry loop fix) |
+| Static Shared Instances | Medium | Reuses instance-shared worlds; only new chunks are saved (terrain persists) |
+| SpawnProvider Persistence | Medium | Prevents return portal drift by persisting spawn providers |
+| Shared Instance Removal Guard | Medium | Prevents shared instance worlds from being auto-removed |
+| Return Portal Stack Guard | Medium | Prevents multiple return portals stacking in shared instances |
 | Null SpawnController | Critical | World crashes when spawn beacons load |
 | Null Spawn Parameters | Critical | World crashes in volcanic/cave biomes |
 | WorldSpawningSystem Invalid Ref | Critical | World thread crash during spawn job creation (invalid chunk ref) |
@@ -71,9 +75,6 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | SetMemoriesCapacity Interaction | Critical | Interaction tick crashes when PlayerMemories component is unavailable |
 | World.execute Shutdown Guard | Medium | Task submissions during world shutdown throw exceptions/spam logs |
 | Prefab Missing Asset Guard | Medium | Prevents exceptions/spam when a prefab file is missing |
-| Shared Portal Instances | Medium | Reuses one instance per portal type; portal timers keep ticking |
-| Static Shared Instance Chunks | Medium | Shared instance chunks are saved once; later edits are not persisted |
-| Return Portal Stable Spawn | Medium | Uses a fixed spawn UUID in shared instances to prevent duplicate return portals |
 | BlockCounter Not Decrementing | Medium | Teleporter limit stuck at 5, can't place new ones |
 | WorldMapTracker Iterator Crash | Critical | Server crashes every ~30 min on high-pop servers |
 | ArchetypeChunk Stale Entity | Critical | IndexOutOfBoundsException when NPC systems access removed entities |
@@ -152,25 +153,23 @@ if (adjustedIndex < 0) {
 
 ## Configuration
 
-Config is loaded from `mods/hyzenkernel/config.json`.
+### Persistent Shared Instances
 
-### Static Shared Instances (Performance)
-
-When enabled, portal instances are **reused per portal type** and their chunks are **saved only once**. This drastically reduces CPU spikes from repeated worldgen, while keeping portals functional. Runtime resets can clear entities/timers between runs without regenerating terrain.
-
-### Disable Persistent Shared Instances
-
-To restore vanilla per-portal instance behavior, disable the shared-instance transformer and related sanitizers:
+To disable the static shared instance system and revert to vanilla behavior, set:
 
 ```json
 {
-  "transformers": { "staticSharedInstances": false },
   "sanitizers": {
-    "sharedInstanceReset": false,
-    "sharedInstanceUnloadChunks": false
+    "sharedInstancePersistence": false
+  },
+  "transformers": {
+    "staticSharedInstances": false
   }
 }
 ```
+
+Note: if you already created `instance-shared-*` worlds, they will remain on disk.
+To fully return to vanilla instance behavior, delete those folders under your server `worlds/` directory.
 
 ## Admin Commands
 
@@ -199,23 +198,23 @@ Look for these log messages at startup:
 Look for these log messages at startup (23 transformers):
 ```
 [HyzenKernel-Early] InteractionChain transformation COMPLETE!
-[HyzenKernel-Early] ChunkSavingSystems transformation COMPLETE!
-[HyzenKernel-Early] PortalDeviceSummonPage transformation COMPLETE!
 [HyzenKernel-Early] ArchetypeChunk transformation COMPLETE!
 [HyzenKernel-Early] BlockComponentChunk transformation COMPLETE!
 [HyzenKernel-Early] CommandBuffer transformation COMPLETE!
 [HyzenKernel-Early] InteractionManager transformation COMPLETE!
 [HyzenKernel-Early] PacketHandler transformation COMPLETE!
-[HyzenKernel-Early] InstancesPlugin transformation COMPLETE!
 [HyzenKernel-Early] PrefabLoader transformation COMPLETE!
-[HyzenKernel-Early] RemovalSystem transformation COMPLETE!
-[HyzenKernel-Early] WorldConfigSaveSystem transformation COMPLETE!
 [HyzenKernel-Early] SetMemoriesCapacityInteraction transformation COMPLETE!
 [HyzenKernel-Early] SpawnMarkerSystems transformation COMPLETE!
 [HyzenKernel-Early] SpawnReferenceSystems transformation COMPLETE!
 [HyzenKernel-Early] TickingThread transformation COMPLETE!
 [HyzenKernel-Early] Universe transformation COMPLETE!
 [HyzenKernel-Early] World transformation COMPLETE!
+[HyzenKernel-Early] InstancesPlugin transformation COMPLETE!
+[HyzenKernel-Early] ChunkSavingSystems transformation COMPLETE!
+[HyzenKernel-Early] WorldConfig SpawnProvider transformation COMPLETE!
+[HyzenKernel-Early] RemovalSystem transformation COMPLETE!
+[HyzenKernel-Early] PortalDeviceSummonPage transformation COMPLETE!
 [HyzenKernel-Early] WorldMapTracker transformation COMPLETE!
 [HyzenKernel-Early] WorldSpawningSystem transformation COMPLETE!
 [HyzenKernel-Early] LivingEntity transformation COMPLETE!

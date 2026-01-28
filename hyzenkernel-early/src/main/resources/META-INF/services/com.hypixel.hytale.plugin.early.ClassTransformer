@@ -17,7 +17,7 @@ com.hyzenkernel.early.SetMemoriesCapacityTransformer
 com.hyzenkernel.early.WorldSpawningSystemTransformer
 com.hyzenkernel.early.PrefabLoaderTransformer
 com.hyzenkernel.early.InstancesPluginTransformer
-com.hyzenkernel.early.RemovalSystemTransformer
-com.hyzenkernel.early.WorldConfigSaveSystemTransformer
 com.hyzenkernel.early.ChunkSavingSystemsTransformer
-com.hyzenkernel.early.PortalDeviceSummonTransformer
+com.hyzenkernel.early.WorldConfigSpawnProviderTransformer
+com.hyzenkernel.early.RemovalSystemTransformer
+com.hyzenkernel.early.PortalDeviceSummonPageTransformer

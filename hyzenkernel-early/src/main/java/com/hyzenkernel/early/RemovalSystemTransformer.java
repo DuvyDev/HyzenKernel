@@ -1,5 +1,6 @@
 package com.hyzenkernel.early;
 
+import com.hyzenkernel.early.config.EarlyConfigManager;
 import com.hypixel.hytale.plugin.early.ClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -8,13 +9,15 @@ import org.objectweb.asm.ClassWriter;
 import static com.hyzenkernel.early.EarlyLogger.*;
 
 /**
- * HyzenKernel Early Plugin - RemovalSystem Bytecode Transformer
+ * HyzenKernel Early Plugin - RemovalSystem Transformer
  *
- * Prevents shared portal instances from being removed when empty or timed out.
+ * Prevents auto-removal of shared portal instances (instance-shared-*) so
+ * portal devices keep a valid destination world.
  */
 public class RemovalSystemTransformer implements ClassTransformer {
 
-    private static final String TARGET_CLASS = "com.hypixel.hytale.builtin.instances.removal.RemovalSystem";
+    private static final String TARGET_CLASS =
+            "com.hypixel.hytale.builtin.instances.removal.RemovalSystem";
 
     @Override
     public int priority() {
@@ -27,9 +30,14 @@ public class RemovalSystemTransformer implements ClassTransformer {
             return classBytes;
         }
 
+        if (!EarlyConfigManager.getInstance().isTransformerEnabled("staticSharedInstances")) {
+            info("RemovalSystemTransformer DISABLED by config");
+            return classBytes;
+        }
+
         separator();
         info("Transforming RemovalSystem...");
-        verbose("Skipping removal for shared portal instances");
+        verbose("Skipping auto-removal for instance-shared worlds");
         separator();
 
         try {

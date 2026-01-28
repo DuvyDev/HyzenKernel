@@ -5,15 +5,15 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 /**
- * ASM ClassVisitor for WorldConfigSaveSystem transformation.
+ * ASM ClassVisitor for WorldConfig spawn provider persistence.
  */
-public class WorldConfigSaveSystemVisitor extends ClassVisitor {
+public class WorldConfigSpawnProviderVisitor extends ClassVisitor {
 
-    private static final String TARGET_METHOD = "saveWorldConfigAndResources";
+    private static final String TARGET_METHOD = "setSpawnProvider";
     private static final String TARGET_DESC =
-            "(Lcom/hypixel/hytale/server/core/universe/world/World;)Ljava/util/concurrent/CompletableFuture;";
+            "(Lcom/hypixel/hytale/server/core/universe/world/spawn/ISpawnProvider;)V";
 
-    public WorldConfigSaveSystemVisitor(ClassVisitor cv) {
+    public WorldConfigSpawnProviderVisitor(ClassVisitor cv) {
         super(Opcodes.ASM9, cv);
     }
 
@@ -22,7 +22,7 @@ public class WorldConfigSaveSystemVisitor extends ClassVisitor {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
 
         if (TARGET_METHOD.equals(name) && TARGET_DESC.equals(descriptor)) {
-            return new WorldConfigSaveSystemMethodVisitor(mv);
+            return new WorldConfigSpawnProviderMethodVisitor(mv, access, name, descriptor);
         }
 
         return mv;

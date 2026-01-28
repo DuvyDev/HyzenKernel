@@ -1,5 +1,6 @@
 package com.hyzenkernel.early;
 
+import com.hyzenkernel.early.config.EarlyConfigManager;
 import com.hypixel.hytale.plugin.early.ClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -8,15 +9,15 @@ import org.objectweb.asm.ClassWriter;
 import static com.hyzenkernel.early.EarlyLogger.*;
 
 /**
- * HyzenKernel Early Plugin - WorldConfigSaveSystem Transformer
+ * HyzenKernel Early Plugin - PortalDeviceSummonPage Transformer
  *
- * Ensures shared portal instances are persisted between restarts by forcing
- * DeleteOnUniverseStart/DeleteOnRemove to false before config saves.
+ * Prevents stacking return portals by reusing the stored spawn point
+ * for instance-shared worlds.
  */
-public class WorldConfigSaveSystemTransformer implements ClassTransformer {
+public class PortalDeviceSummonPageTransformer implements ClassTransformer {
 
     private static final String TARGET_CLASS =
-            "com.hypixel.hytale.server.core.universe.system.WorldConfigSaveSystem";
+            "com.hypixel.hytale.builtin.portals.ui.PortalDeviceSummonPage";
 
     @Override
     public int priority() {
@@ -29,26 +30,31 @@ public class WorldConfigSaveSystemTransformer implements ClassTransformer {
             return classBytes;
         }
 
+        if (!EarlyConfigManager.getInstance().isTransformerEnabled("staticSharedInstances")) {
+            info("PortalDeviceSummonPageTransformer DISABLED by config");
+            return classBytes;
+        }
+
         separator();
-        info("Transforming WorldConfigSaveSystem...");
-        verbose("Forcing shared portal instances to persist between restarts");
+        info("Transforming PortalDeviceSummonPage...");
+        verbose("Skipping return portal spawn if shared instance already has spawn point");
         separator();
 
         try {
             ClassReader reader = new ClassReader(classBytes);
             ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            ClassVisitor visitor = new WorldConfigSaveSystemVisitor(writer);
+            ClassVisitor visitor = new PortalDeviceSummonPageVisitor(writer);
 
             reader.accept(visitor, ClassReader.EXPAND_FRAMES);
 
             byte[] transformedBytes = writer.toByteArray();
-            info("WorldConfigSaveSystem transformation COMPLETE!");
+            info("PortalDeviceSummonPage transformation COMPLETE!");
             verbose("Original size: " + classBytes.length + " bytes");
             verbose("Transformed size: " + transformedBytes.length + " bytes");
 
             return transformedBytes;
         } catch (Exception e) {
-            error("ERROR: Failed to transform WorldConfigSaveSystem!");
+            error("ERROR: Failed to transform PortalDeviceSummonPage!");
             error("Returning original bytecode to prevent crash.", e);
             return classBytes;
         }
