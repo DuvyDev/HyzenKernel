@@ -1,7 +1,7 @@
 {
   "Group": "com.hyzenkernel",
   "Name": "HyzenKernel",
-  "Version": "1.0.9",
+  "Version": "1.1.0",
   "Description": "Essential bug fixes for Hytale Early Access servers. Includes runtime plugin and early plugin bytecode transformers. Prevents crashes, player kicks, combat desync, and sync issues.",
   "Authors": [
     {
@@ -17,12 +17,13 @@
   "IncludesAssetPack": false,
   "SubPlugins": {
     "com.hyzenkernel:HyzenKernel-Runtime": {
-      "Path": "mods/hyzenkernel-1.0.9.jar",
+      "Path": "mods/hyzenkernel-1.1.0.jar",
       "Description": "Runtime plugin - Place in mods/ folder"
     },
     "com.hyzenkernel:HyzenKernel-Early": {
-      "Path": "earlyplugins/hyzenkernel-early-1.0.9.jar",
+      "Path": "earlyplugins/hyzenkernel-early-1.1.0.jar",
       "Description": "Early plugin bytecode transformers - Place in earlyplugins/ folder"
     }
   }
 }
+
