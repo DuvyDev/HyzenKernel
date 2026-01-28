@@ -195,19 +195,27 @@ public class RemovalSystemTickMethodVisitor extends MethodVisitor {
                 false
         );
 
-        // RemovalSystemHelper.removeWorldAsync(name);
-        target.visitVarInsn(Opcodes.ALOAD, 6);
+        // Universe.get().removeWorld(name);
         target.visitMethodInsn(
                 Opcodes.INVOKESTATIC,
-                "com/hyzenkernel/early/RemovalSystemHelper",
-                "removeWorldAsync",
-                "(Ljava/lang/String;)V",
+                "com/hypixel/hytale/server/core/universe/Universe",
+                "get",
+                "()Lcom/hypixel/hytale/server/core/universe/Universe;",
                 false
         );
+        target.visitVarInsn(Opcodes.ALOAD, 6);
+        target.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/server/core/universe/Universe",
+                "removeWorld",
+                "(Ljava/lang/String;)Z",
+                false
+        );
+        target.visitInsn(Opcodes.POP);
 
         target.visitLabel(returnLabel);
         target.visitInsn(Opcodes.RETURN);
-        target.visitMaxs(4, 9);
+        target.visitMaxs(5, 9);
         target.visitEnd();
     }
 
