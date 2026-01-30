@@ -15,7 +15,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -50,6 +49,7 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
     private Class<?> interactionManagerClass = null;
     private ComponentType interactionManagerType = null;
     private Method getChainsMethod = null;
+    private Field chainsField = null; // InteractionManager.chains (mutable)
     private Field contextField = null;  // InteractionChain.context
     private Field owningEntityField = null;  // InteractionContext.owningEntity
     private Method isValidMethod = null;  // Ref.isValid()
@@ -70,6 +70,14 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
     private boolean initialized = false;
     private boolean apiDiscoveryFailed = false;
     private boolean timeoutDetectionEnabled = false;
+
+    // Log throttling to prevent spam (default 5s between repeated warnings)
+    private static final long WARN_LOG_COOLDOWN_MS = 5000;
+    private static final long REMOVAL_LOG_COOLDOWN_MS = 5000;
+    private final ConcurrentHashMap<String, Long> lastWarnLogTimes = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, AtomicInteger> suppressedWarnCounts = new ConcurrentHashMap<>();
+    private final AtomicInteger removalsSinceLastLog = new AtomicInteger(0);
+    private volatile long lastRemovalLogTime = 0;
 
     // Statistics
     private final AtomicInteger chainsValidated = new AtomicInteger(0);
@@ -116,7 +124,7 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
 
             // Get the chains map
             @SuppressWarnings("unchecked")
-            Map<Integer, Object> chains = (Map<Integer, Object>) getChainsMethod.invoke(interactionManager);
+            Map<Integer, Object> chains = getChains(interactionManager);
             if (chains == null || chains.isEmpty()) {
                 return;
             }
@@ -139,7 +147,8 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
                 Object context = contextField.get(chain);
                 if (context == null) {
                     chainsToRemove.add(chainId);
-                    plugin.getLogger().at(Level.WARNING).log(
+                    logWarningThrottled(
+                            "null-context",
                             "[InteractionManagerSanitizer] Found chain with null context, removing to prevent crash");
                     continue;
                 }
@@ -148,7 +157,8 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
                 Object owningEntityRef = owningEntityField.get(context);
                 if (owningEntityRef == null) {
                     chainsToRemove.add(chainId);
-                    plugin.getLogger().at(Level.WARNING).log(
+                    logWarningThrottled(
+                            "null-owning-ref",
                             "[InteractionManagerSanitizer] Found chain with null owningEntity ref, removing to prevent crash");
                     continue;
                 }
@@ -158,7 +168,8 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
                     Boolean isValid = (Boolean) isValidMethod.invoke(owningEntityRef);
                     if (!isValid) {
                         chainsToRemove.add(chainId);
-                        plugin.getLogger().at(Level.WARNING).log(
+                        logWarningThrottled(
+                                "invalid-owning-ref",
                                 "[InteractionManagerSanitizer] Found chain with invalid owningEntity ref, removing to prevent crash");
                         continue;
                     }
@@ -184,7 +195,8 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
                                 chainsToRemove.add(chainId);
                                 waitingChains.remove(chainKey);
                                 timeoutsPrevented.incrementAndGet();
-                                plugin.getLogger().at(Level.WARNING).log(
+                                logWarningThrottled(
+                                        "client-timeout",
                                         "[InteractionManagerSanitizer] Chain waiting for client data > " +
                                         clientTimeoutMs + "ms, removing to prevent kick (chain " + chainId + ")");
                             }
@@ -202,15 +214,28 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
             waitingChains.keySet().removeIf(key -> !seenChainKeys.contains(key));
 
             // Remove invalid chains
+            int removedCount = 0;
             if (!chainsToRemove.isEmpty()) {
                 for (Integer chainId : chainsToRemove) {
-                    chains.remove(chainId);
-                    chainsRemoved.incrementAndGet();
+                    try {
+                        Object removed = chains.remove(chainId);
+                        if (removed != null) {
+                            chainsRemoved.incrementAndGet();
+                            removedCount++;
+                        }
+                    } catch (UnsupportedOperationException e) {
+                        logWarningThrottled(
+                                "chains-unmodifiable",
+                                "[InteractionManagerSanitizer] Unable to remove invalid chains (unmodifiable map) - sanitizer may not prevent crashes");
+                        removedCount = 0;
+                        break;
+                    }
                 }
-                crashesPrevented.incrementAndGet();
-                plugin.getLogger().at(Level.INFO).log(
-                        "[InteractionManagerSanitizer] Removed " + chainsToRemove.size() +
-                                " invalid chain(s) to prevent player kick");
+                if (removedCount > 0) {
+                    crashesPrevented.incrementAndGet();
+                    removalsSinceLastLog.addAndGet(removedCount);
+                    logRemovalSummaryIfNeeded();
+                }
             }
 
         } catch (Exception e) {
@@ -243,8 +268,18 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
             Method getComponentTypeMethod = interactionModuleClass.getMethod("getInteractionManagerComponent");
             interactionManagerType = (ComponentType) getComponentTypeMethod.invoke(interactionModule);
 
-            // Get getChains() method
+            // Get getChains() method (unmodifiable)
             getChainsMethod = interactionManagerClass.getMethod("getChains");
+
+            // Get mutable chains field if possible
+            chainsField = discoverChainsField(interactionManagerClass);
+            if (chainsField != null) {
+                plugin.getLogger().at(Level.INFO).log(
+                        "[InteractionManagerSanitizer] Found mutable chains field: " + chainsField.getName());
+            } else {
+                plugin.getLogger().at(Level.WARNING).log(
+                        "[InteractionManagerSanitizer] Mutable chains field not found - removals may be limited");
+            }
 
             // Get context field from InteractionChain
             contextField = interactionChainClass.getDeclaredField("context");
@@ -368,6 +403,80 @@ public class InteractionManagerSanitizer extends EntityTickingSystem<EntityStore
         // Compare enum values
         return callState == waitingForClientDataState ||
                callState.toString().contains("WAITING") && callState.toString().contains("CLIENT");
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<Integer, Object> getChains(Object interactionManager) throws Exception {
+        if (chainsField != null) {
+            Object chainsObj = chainsField.get(interactionManager);
+            if (chainsObj instanceof Map) {
+                return (Map<Integer, Object>) chainsObj;
+            }
+        }
+        return (Map<Integer, Object>) getChainsMethod.invoke(interactionManager);
+    }
+
+    private Field discoverChainsField(Class<?> interactionManagerClass) {
+        try {
+            Field field = interactionManagerClass.getDeclaredField("chains");
+            field.setAccessible(true);
+            return field;
+        } catch (NoSuchFieldException ignored) {
+            // Fall back to scanning for a non-unmodifiable map-like field
+        }
+
+        for (Field field : interactionManagerClass.getDeclaredFields()) {
+            String name = field.getName().toLowerCase();
+            if (name.contains("unmodifiable")) {
+                continue;
+            }
+            Class<?> type = field.getType();
+            boolean mapLike = Map.class.isAssignableFrom(type) ||
+                    type.getName().contains("Int2ObjectMap");
+            if (mapLike) {
+                field.setAccessible(true);
+                return field;
+            }
+        }
+        return null;
+    }
+
+    private void logWarningThrottled(String key, String message) {
+        if (!ConfigManager.getInstance().logSanitizerActions()) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        Long last = lastWarnLogTimes.get(key);
+        if (last == null || now - last >= WARN_LOG_COOLDOWN_MS) {
+            AtomicInteger suppressed = suppressedWarnCounts.computeIfAbsent(key, k -> new AtomicInteger(0));
+            int suppressedCount = suppressed.getAndSet(0);
+            if (suppressedCount > 0) {
+                plugin.getLogger().at(Level.WARNING).log(message + " (+" + suppressedCount + " suppressed)");
+            } else {
+                plugin.getLogger().at(Level.WARNING).log(message);
+            }
+            lastWarnLogTimes.put(key, now);
+        } else {
+            suppressedWarnCounts.computeIfAbsent(key, k -> new AtomicInteger(0)).incrementAndGet();
+        }
+    }
+
+    private void logRemovalSummaryIfNeeded() {
+        if (!ConfigManager.getInstance().logSanitizerActions()) {
+            removalsSinceLastLog.set(0);
+            return;
+        }
+        long now = System.currentTimeMillis();
+        if (now - lastRemovalLogTime < REMOVAL_LOG_COOLDOWN_MS) {
+            return;
+        }
+        int removed = removalsSinceLastLog.getAndSet(0);
+        if (removed > 0) {
+            plugin.getLogger().at(Level.INFO).log(
+                    "[InteractionManagerSanitizer] Removed " + removed +
+                            " invalid chain(s) to prevent player kick");
+            lastRemovalLogTime = now;
+        }
     }
 
     /**
